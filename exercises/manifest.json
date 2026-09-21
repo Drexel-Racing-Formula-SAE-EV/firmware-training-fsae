@@ -1,0 +1,252 @@
+{
+  "schema": 1,
+  "projects": {
+    "10": {
+      "directory": "10_mini_ecu",
+      "sources": {
+        "exercises/10_mini_ecu/src/main.c": "projects/10_mini_ecu/src/main.c",
+        "exercises/10_mini_ecu/src/training_ecu.c": "common/src/training_ecu.c"
+      },
+      "tasks": [
+        {
+          "id": "10.1",
+          "file": "exercises/10_mini_ecu/src/training_ecu.c",
+          "function": "training_ecu_step",
+          "requirement": "Implement INIT/READY/ACTIVE/FAULT transitions and guarded recovery; actuator may be ON only in ACTIVE."
+        }
+      ]
+    },
+    "00": {
+      "directory": "00_bringup",
+      "sources": {
+        "exercises/00_bringup/src/main.c": "projects/00_bringup/src/main.c"
+      },
+      "tasks": [
+        {
+          "id": "00.1",
+          "file": "exercises/00_bringup/src/main.c",
+          "function": "main",
+          "requirement": "Print FSAE Firmware Training and Project 00 - Bringup once, then heartbeat 0, 1, 2... at 1000 ms intervals."
+        }
+      ]
+    },
+    "01": {
+      "directory": "01_gpio_polling",
+      "sources": {
+        "exercises/01_gpio_polling/src/main.c": "projects/01_gpio_polling/src/main.c",
+        "exercises/01_gpio_polling/src/board_io.c": "platform/stm32f4/src/board_io.c"
+      },
+      "tasks": [
+        {
+          "id": "01.1",
+          "file": "exercises/01_gpio_polling/src/board_io.c",
+          "function": "board_led_init",
+          "requirement": "Enable GPIOD, configure PD12 push-pull output at low speed with no pull, then set OFF."
+        },
+        {
+          "id": "01.2",
+          "file": "exercises/01_gpio_polling/src/board_io.c",
+          "function": "board_led_set",
+          "requirement": "Update led_state and write PD12 to match the requested level."
+        },
+        {
+          "id": "01.3",
+          "file": "exercises/01_gpio_polling/src/board_io.c",
+          "function": "board_button_init_polling",
+          "requirement": "Enable GPIOA and configure PA0 as input with GPIO_NOPULL for this board."
+        },
+        {
+          "id": "01.4",
+          "file": "exercises/01_gpio_polling/src/board_io.c",
+          "function": "board_button_pressed",
+          "requirement": "Read PA0 through HAL and return true only for GPIO_PIN_SET."
+        }
+      ]
+    },
+    "02": {
+      "directory": "02_gpio_interrupt",
+      "sources": {
+        "exercises/02_gpio_interrupt/src/main.c": "projects/02_gpio_interrupt/src/main.c",
+        "exercises/02_gpio_interrupt/src/board_io.c": "platform/stm32f4/src/board_io.c"
+      },
+      "tasks": [
+        {
+          "id": "02.1",
+          "file": "exercises/02_gpio_interrupt/src/board_io.c",
+          "function": "board_button_init_interrupt",
+          "requirement": "Configure PA0 rising-edge EXTI; enable GPIOA, configure HAL GPIO, then NVIC priority 6 and EXTI0 IRQ."
+        },
+        {
+          "id": "02.2",
+          "file": "exercises/02_gpio_interrupt/src/main.c",
+          "function": "HAL_GPIO_EXTI_Callback",
+          "requirement": "Only for GPIO_PIN_0 increment button_events; no logging, delays or blocking calls in ISR."
+        }
+      ]
+    },
+    "03": {
+      "directory": "03_timer_scheduler",
+      "sources": {
+        "exercises/03_timer_scheduler/src/main.c": "projects/03_timer_scheduler/src/main.c",
+        "exercises/03_timer_scheduler/src/timebase.c": "platform/stm32f4/src/timebase.c"
+      },
+      "tasks": [
+        {
+          "id": "03.1",
+          "file": "exercises/03_timer_scheduler/src/timebase.c",
+          "function": "time_elapsed",
+          "requirement": "Use unsigned subtraction to compare elapsed time against period_ms, including wraparound."
+        },
+        {
+          "id": "03.2",
+          "file": "exercises/03_timer_scheduler/src/timebase.c",
+          "function": "periodic_due",
+          "requirement": "Reject zero period; count elapsed releases, retain phase, add skipped releases to missed, dispatch at most once."
+        }
+      ]
+    },
+    "04": {
+      "directory": "04_uart_cli",
+      "sources": {
+        "exercises/04_uart_cli/src/main.c": "projects/04_uart_cli/src/main.c",
+        "exercises/04_uart_cli/src/console.c": "platform/stm32f4/src/console.c"
+      },
+      "tasks": [
+        {
+          "id": "04.1",
+          "file": "exercises/04_uart_cli/src/main.c",
+          "function": "run_command",
+          "requirement": "Implement exact help/status/uptime/gpio/timer/version commands and an unknown-command response."
+        },
+        {
+          "id": "04.2",
+          "file": "exercises/04_uart_cli/src/console.c",
+          "function": "HAL_UART_RxCpltCallback",
+          "requirement": "Publish rx_byte into the bounded SPSC ring before advancing rx_head; detect full, count overflow, mark corrupt, and keep RX rearming."
+        }
+      ]
+    },
+    "05": {
+      "directory": "05_adc_sensor",
+      "sources": {
+        "exercises/05_adc_sensor/src/main.c": "projects/05_adc_sensor/src/main.c",
+        "exercises/05_adc_sensor/src/temperature_monitor.c": "projects/05_adc_sensor/src/temperature_monitor.c"
+      },
+      "tasks": [
+        {
+          "id": "05.1",
+          "file": "exercises/05_adc_sensor/src/temperature_monitor.c",
+          "function": "temperature_from_adc_mc",
+          "requirement": "Convert counts to rounded millivolts (3300/4095), then millidegrees using 10 mV per degree."
+        },
+        {
+          "id": "05.2",
+          "file": "exercises/05_adc_sensor/src/temperature_monitor.c",
+          "function": "temperature_monitor_update",
+          "requirement": "Reject raw above 4095; store converted value/time and plausibility -40000..150000 mC."
+        },
+        {
+          "id": "05.3",
+          "file": "exercises/05_adc_sensor/src/temperature_monitor.c",
+          "function": "temperature_monitor_evaluate",
+          "requirement": "Apply invalid then stale (>500 ms) precedence, then warning/fault hysteresis using the constants above."
+        }
+      ]
+    },
+    "06": {
+      "directory": "06_can_node",
+      "sources": {
+        "exercises/06_can_node/src/main.c": "projects/06_can_node/src/main.c",
+        "exercises/06_can_node/src/training_can_protocol.c": "common/src/training_can_protocol.c"
+      },
+      "tasks": [
+        {
+          "id": "06.1",
+          "file": "exercises/06_can_node/src/training_can_protocol.c",
+          "function": "training_command_process",
+          "requirement": "Validate ID, type, DLC, enable value and rolling counter before updating state; count each rejection and accepted command."
+        },
+        {
+          "id": "06.2",
+          "file": "exercises/06_can_node/src/training_can_protocol.c",
+          "function": "training_command_fresh",
+          "requirement": "Require valid and unsigned age <= TRAINING_COMMAND_TIMEOUT_MS; support millisecond wrap."
+        },
+        {
+          "id": "06.3",
+          "file": "exercises/06_can_node/src/training_can_protocol.c",
+          "function": "training_can_make_temperature",
+          "requirement": "Encode signed millidegrees in four big-endian bytes after initializing standard data frame."
+        }
+      ]
+    },
+    "07": {
+      "directory": "07_freertos_tasks",
+      "sources": {
+        "exercises/07_freertos_tasks/src/main.c": "projects/07_freertos_tasks/src/main.c"
+      },
+      "tasks": [
+        {
+          "id": "07.1",
+          "file": "exercises/07_freertos_tasks/src/main.c",
+          "function": "sensor_task",
+          "requirement": "Acquire ADC and convert, update count and actual period; use vTaskDelayUntil for a phase-preserving 100 ms task."
+        },
+        {
+          "id": "07.2",
+          "file": "exercises/07_freertos_tasks/src/main.c",
+          "function": "control_task",
+          "requirement": "Every 50 ms drain CAN, update freshness, consume ISR button events outside ISR, and record count/period."
+        }
+      ]
+    },
+    "08": {
+      "directory": "08_rtos_sync",
+      "sources": {
+        "exercises/08_rtos_sync/src/main.c": "projects/08_rtos_sync/src/main.c"
+      },
+      "tasks": [
+        {
+          "id": "08.1",
+          "file": "exercises/08_rtos_sync/src/main.c",
+          "function": "HAL_GPIO_EXTI_Callback",
+          "requirement": "For PA0 and an existing semaphore, increment events, give with FromISR, and request a yield if needed."
+        },
+        {
+          "id": "08.2",
+          "file": "exercises/08_rtos_sync/src/main.c",
+          "function": "sensor_task",
+          "requirement": "Every 100 ms enqueue sequence/time/raw by value with zero wait; count failed sends via record_queue_drop."
+        },
+        {
+          "id": "08.3",
+          "file": "exercises/08_rtos_sync/src/main.c",
+          "function": "processing_task",
+          "requirement": "Honor flood_active using task notification, block on queue receive, and publish latest_sample inside a short critical section."
+        }
+      ]
+    },
+    "09": {
+      "directory": "09_fault_manager",
+      "sources": {
+        "exercises/09_fault_manager/src/main.c": "projects/09_fault_manager/src/main.c",
+        "exercises/09_fault_manager/src/training_fault_manager.c": "common/src/training_fault_manager.c"
+      },
+      "tasks": [
+        {
+          "id": "09.1",
+          "file": "exercises/09_fault_manager/src/training_fault_manager.c",
+          "function": "training_fault_manager_step",
+          "requirement": "Compute warnings and active sensor/comm/task bits, OR active into latches, and request safe state iff active is nonzero."
+        },
+        {
+          "id": "09.2",
+          "file": "exercises/09_fault_manager/src/training_fault_manager.c",
+          "function": "training_fault_manager_clear_latches",
+          "requirement": "Reject clearing while any active fault exists; otherwise clear latches and return true."
+        }
+      ]
+    }
+  }
+}
+

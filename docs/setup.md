@@ -1,8 +1,11 @@
-# Windows setup and first run
+# Windows setup
 
-Open PowerShell in `C:\FSAE\firmware-training`, then verify:
+Use PowerShell from the repository folder. Required tools: Git, Python 3, CMake, Ninja, Arm GNU compiler/GDB, and Renode. Native gcc or clang is also needed for host behavior checks.
+
+## 1. Check installed tools
 
 ```powershell
+cd C:\\FSAE\\firmware-training
 git --version
 python --version
 cmake --version
@@ -10,38 +13,48 @@ ninja --version
 arm-none-eabi-gcc --version
 arm-none-eabi-gdb --version
 renode --version
+Get-Command gcc, clang -ErrorAction SilentlyContinue
 ```
 
-Initialize dependencies and build Project 00:
+The final command needs to find at least one native compiler for host tests. You can build and simulate ARM firmware without it, but host checks will report BLOCKED.
+
+## 2. Download dependencies
+
+For a Git clone with registered submodules:
 
 ```powershell
-git submodule update --init --recursive
+.\\tools\\setup_dependencies.ps1
+```
+
+A downloaded ZIP does not contain dependencies or Git submodule registrations. For a fresh ZIP installation only, initialize Git if needed and add Cube once:
+
+```powershell
+git init
+git submodule add https://github.com/STMicroelectronics/STM32CubeF4.git third_party/STM32CubeF4
+.\\tools\\setup_dependencies.ps1
+```
+
+Do not repeat the Cube add command over an existing checkout. The setup helper initializes nested dependencies and selects FreeRTOS-Kernel V11.3.0.
+
+## 3. Confirm the toolchain with the reference
+
+```powershell
 python tools/build.py 00
 python tools/run.py 00
 ```
 
-Expected UART output:
+The UART4 window should show both banners and increasing heartbeat values. Close Renode afterwards. This is a reference demonstration, not your assignment.
 
-```text
-FSAE Firmware Training
-Project 00 - Bringup
-heartbeat 0
-heartbeat 1
-```
+## 4. Begin coding
 
-For debugging:
+Open [Lab 00](../exercises/00_bringup/README.md), edit its source, and use:
 
 ```powershell
-.\tools\debug.ps1 -Project 00
+python tools/build.py 00 --student
+python tools/exercise.py check 00
+python tools/run.py 00 --student
 ```
 
-The debug Renode script loads the ELF and opens port 3333 without starting the
-CPU. GDB connects, sets `break main`, and continues from reset.
+Before implementation, the starter prints its student banner and the checker reports NOT YET IMPLEMENTED. Follow the lab requirements to add the missing behavior.
 
-If CMake reports that STM32CubeF4 is missing, check:
-
-```powershell
-git submodule status
-Test-Path .\third_party\STM32CubeF4\Drivers\CMSIS
-```
-
+[Back to lab index](../README.md) · [Troubleshooting](troubleshooting.md)

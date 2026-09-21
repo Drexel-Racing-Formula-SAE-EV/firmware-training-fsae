@@ -1,104 +1,55 @@
 # FSAE Firmware Training
 
-STM32F407VG training for new Formula SAE firmware members. Projects 00–06 are
-bare metal; Projects 07–10 introduce FreeRTOS, concurrency, fault management,
-and a small ECU state machine. Zephyr is not used.
+Learn STM32 firmware by completing 11 coding labs in Renode. No physical board is needed to start. Projects 00–06 are bare metal; 07–10 use FreeRTOS.
 
-## Prerequisites
+## Start here
 
-- Git and Python 3
-- CMake and Ninja
-- Arm GNU Toolchain (`arm-none-eabi-gcc`, `arm-none-eabi-gdb`)
-- Renode
-
-Initialize ST's source tree after cloning a Git repository with a committed
-STM32CubeF4 submodule entry:
+1. Follow [Windows setup](docs/setup.md) once.
+2. Open [Lab 00](exercises/00_bringup/README.md).
+3. Edit the numbered TODOs in that lab's `exercises/.../src/` files.
+4. Build, check and run your code from the repository root:
 
 ```powershell
-.\tools\setup_dependencies.ps1
+python tools/build.py 00 --student
+python tools/exercise.py check 00
+python tools/run.py 00 --student
 ```
 
-The trailing `m` in `--recursivem` is invalid; the command above is the exact
-spelling.
+An untouched lab builds but is intentionally incomplete. `NOT YET IMPLEMENTED` tells you what to work on; it is not an installation problem. Finish the TODOs before expecting the lab's behavior tests to pass.
 
-## Build, run, and debug
+## Choose a lab
 
-From the repository root:
+| Lab | What you implement |
+|---|---|
+| [00](exercises/00_bringup/README.md) | Banners and heartbeat; trace startup with GDB |
+| [01](exercises/01_gpio_polling/README.md) | GPIO configuration and button/LED IO |
+| [02](exercises/02_gpio_interrupt/README.md) | EXTI setup and interrupt event handoff |
+| [03](exercises/03_timer_scheduler/README.md) | Wraparound-safe cooperative scheduling |
+| [04](exercises/04_uart_cli/README.md) | UART receive buffering and commands |
+| [05](exercises/05_adc_sensor/README.md) | Sensor conversion, validity and hysteresis |
+| [06](exercises/06_can_node/README.md) | CAN validation, counters and timeouts |
+| [07](exercises/07_freertos_tasks/README.md) | Periodic FreeRTOS task bodies |
+| [08](exercises/08_rtos_sync/README.md) | Queues and ISR semaphore signaling |
+| [09](exercises/09_fault_manager/README.md) | Fault detection, latching and clearing |
+| [10](exercises/10_mini_ecu/README.md) | ECU state transitions and guarded recovery |
+
+Each lab tells you which files to edit, how to test them, and what evidence to submit.
+
+## Where things belong
+
+| Location | Purpose |
+|---|---|
+| `exercises/` | Your editable labs and instructions |
+| `projects/` | Completed reference applications; compare after your attempt |
+| `platform/`, `common/` | Shared support/reference modules; edit a lab's copy when instructed |
+| `tools/`, `tests/`, `renode/` | Build, checks, simulation and debugging support |
+| `third_party/` | Downloaded dependencies; do not edit |
+| `build/student/NN/` | Generated student output; do not edit |
+
+Use `--student` for your work. Omitting it builds/runs the completed reference in `build/NN/`. To debug your work:
 
 ```powershell
-python tools/build.py 00
-python tools/run.py 00
-python tools/test.py 10
+.\\tools\\debug.ps1 -Project 00 -Student
 ```
 
-Equivalent PowerShell entry points:
-
-```powershell
-.\tools\build.ps1 -Project 00
-.\tools\run.ps1 -Project 00
-.\tools\debug.ps1 -Project 00
-```
-
-Build artifacts are placed in `build/<project>/`, for example
-`build/00/project00.elf`.
-
-## Project sequence
-
-| Project | Subject | Primary lesson |
-|---|---|---|
-| 00 | Bring-up | reset-to-main, ELF, UART, GDB |
-| 01 | GPIO polling | digital input/output and polling cost |
-| 02 | GPIO interrupts | EXTI, NVIC, ISR-to-main event handoff |
-| 03 | Cooperative scheduler | SysTick, periodic jobs, wraparound-safe time |
-| 04 | UART CLI | RX interrupt, ring buffer, command parser |
-| 05 | Sensor monitor | ADC conversion, validity, staleness, hysteresis |
-| 06 | Bare-metal CAN | frames, filters, rolling counters, timeouts |
-| 07 | FreeRTOS fundamentals | periodic tasks and stack monitoring |
-| 08 | RTOS synchronization | queues, mutexes, ISR semaphores |
-| 09 | Fault manager | health supervision, latching, safe state |
-| 10 | Mini ECU | INIT/READY/ACTIVE/FAULT integration |
-
-Each project is independently buildable. Select it with `TRAINING_PROJECT`;
-only that project's `main()` is linked.
-
-## Renode controls
-
-Projects 01 and 02 use the Discovery model's `UserButton` and `UserLED`:
-
-```text
-sysbus.gpioPortA.UserButton Press
-sysbus.gpioPortA.UserButton Release
-```
-
-Projects 04 and 05 accept input in the UART4 analyzer window.
-Projects 06–10 launch a second virtual STM32 node on a shared CAN hub; its
-UART window shows the generated command traffic.
-
-Renode's current STM32F4 model does not implement ADC1. Project 05 therefore
-uses an injected raw-count backend in simulation while retaining an actual HAL
-ADC1/PA1 backend for hardware builds (`-DTRAINING_RENODE=OFF`). Application and
-sensor-monitoring logic is identical in both cases.
-
-## Validation and dependency setup
-
-Read `docs/VALIDATION.md` for test evidence and outstanding runtime checks.
-`tools/test.py` runs native regressions and structure checks, not the MCU.
-It requires a native `gcc` or `clang` in addition to the Arm compiler.
-
-Hardware build: `python tools/build.py 05 --hardware --clean`. Hardware mode
-accepts only `help` and `status`. The run/debug helpers target Renode.
-
-The build helper verifies ARM ELF vectors and strong interrupt symbols and
-records Cube/nested submodule revisions and compiler version in
-`build/<project>/dependencies.txt`.
-
-A ZIP contains neither the dependency source trees nor Git submodule gitlinks. In a new
-Git repository without an existing submodule, add it once using
-`git submodule add https://github.com/STMicroelectronics/STM32CubeF4.git third_party/STM32CubeF4`,
-then run `tools/setup_dependencies.ps1`. Do not repeat the Cube add command over
-an existing checkout. FreeRTOS-Kernel is checked out exactly at `V11.3.0`.
-
-## Scope
-
-No RTOS code is present before Project 07. Projects 11–13 remain optional future
-work described in [`docs/ROADMAP.md`](docs/ROADMAP.md).
+Need help? [Troubleshooting](docs/troubleshooting.md) covers test messages, UART windows, GDB and common build issues. [Lab workflow](exercises/README.md) explains completion requirements. Optional physical signal maps are in each lab's wiring notes.

@@ -1,13 +1,19 @@
 param(
     [ValidateSet("00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10")]
-    [string]$Project = "00"
+    [string]$Project = "00",
+    [switch]$Student
 )
 $ErrorActionPreference = "Stop"
 $Repo = Split-Path -Parent $PSScriptRoot
-& "$PSScriptRoot\build.ps1" -Project $Project
+& "$PSScriptRoot\build.ps1" -Project $Project -Student:$Student
 
 $Script = Join-Path $Repo "renode\project$Project-debug.resc"
 $Elf = Join-Path $Repo "build\$Project\project$Project.elf"
+if ($Student) {
+    $Script = python "$PSScriptRoot\exercise.py" script $Project --debug
+    if ($LASTEXITCODE -ne 0) { throw "Student debug script generation failed." }
+    $Elf = Join-Path $Repo "build\student\$Project\project$Project.elf"
+}
 function Test-GdbPort {
     # Do not probe the GDB server by connecting a TcpClient. Renode treats that
     # probe as a debugger connection and can start the CPU before the real GDB

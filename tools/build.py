@@ -15,11 +15,12 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("project", choices=sorted(PROJECTS))
     parser.add_argument("--clean", action="store_true")
+    parser.add_argument("--student", action="store_true", help="Build the editable exercise, not the reference")
     parser.add_argument("--hardware", action="store_true",
                         help="Use real ADC1 instead of the injected Renode backend")
     args = parser.parse_args()
 
-    build_dir = ROOT / "build" / args.project
+    build_dir = ROOT / "build" / "student" / args.project if args.student else ROOT / "build" / args.project
     if args.clean and build_dir.exists():
         shutil.rmtree(build_dir)
 
@@ -27,6 +28,7 @@ def main() -> int:
         "cmake", "-S", str(ROOT), "-B", str(build_dir), "-G", "Ninja",
         f"-DCMAKE_TOOLCHAIN_FILE={ROOT / 'cmake' / 'arm-none-eabi.cmake'}",
         f"-DTRAINING_PROJECT={args.project}",
+        f"-DTRAINING_VARIANT={'student' if args.student else 'reference'}",
         "-DCMAKE_BUILD_TYPE=Debug",
         f"-DTRAINING_RENODE={'OFF' if args.hardware else 'ON'}",
     ]

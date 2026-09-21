@@ -6,6 +6,13 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 endif()
 
 project(fsae_firmware_training C ASM)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(TRAINING_VARIANT "reference" CACHE STRING "reference or student")
+set_property(CACHE TRAINING_VARIANT PROPERTY STRINGS reference student)
+if(NOT TRAINING_VARIANT MATCHES "^(reference|student)$")
+  message(FATAL_ERROR "TRAINING_VARIANT must be reference or student")
+endif()
 
 set(TRAINING_PROJECT "00" CACHE STRING "Project number: 00 through 10")
 set_property(CACHE TRAINING_PROJECT PROPERTY STRINGS 00 01 02 03 04 05 06 07 08 09 10)
@@ -40,3 +47,4 @@ endif()
 add_subdirectory(platform/stm32f4)
 add_subdirectory(common)
 add_subdirectory(projects/${SELECTED_DIR})
+include(exercises/select.cmake)

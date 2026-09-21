@@ -2,11 +2,13 @@ param(
     [ValidateSet("00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10")]
     [string]$Project = "00",
     [switch]$Clean,
-    [switch]$Hardware
+    [switch]$Hardware,
+    [switch]$Student
 )
 $ErrorActionPreference = "Stop"
 $Repo = Split-Path -Parent $PSScriptRoot
 $Arguments = @("$PSScriptRoot\build.py", $Project)
+if ($Student) { $Arguments += "--student" }
 if ($Clean) { $Arguments += "--clean" }
 if ($Hardware) { $Arguments += "--hardware" }
 python @Arguments
