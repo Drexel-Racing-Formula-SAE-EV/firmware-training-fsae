@@ -1,0 +1,44 @@
+# Project 01 — GPIO polling
+
+## Objective
+
+Continuously read PA0 (`UserButton`) and drive PD12 (`UserLED`).
+
+## Concepts and background
+
+GPIO mode, input/output data, pull-down, active-high logic, and polling. Polling
+is simple but consumes CPU time and scales poorly.
+
+## Provided code
+
+Board pin initialization and a readable polling loop.
+
+## Student tasks
+
+Run it, press/release the virtual button, trace the HAL calls to GPIO registers,
+and modify the output policy without adding an interrupt.
+
+## Requirements and acceptance criteria
+
+LED exactly follows the button and UART prints only on state changes. Explain
+the electrical role of a pull-down and the main limitation of polling.
+
+## Build, run, and tests
+
+```powershell
+python tools/build.py 01
+python tools/run.py 01
+```
+
+In the Renode monitor: `UserButton Press`, then `UserButton Release`.
+
+## Expected output
+
+`button=PRESSED led=ON`, then `button=RELEASED led=OFF`.
+
+## Common mistakes, review questions, and stretch goals
+
+Wrong pin, inverted logic, floating input, and printing continuously. Review:
+what register does `HAL_GPIO_ReadPin` ultimately inspect? Stretch: debounce the
+input without blocking.
+

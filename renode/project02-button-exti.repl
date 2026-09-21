@@ -1,0 +1,6 @@
+// Renode 1.17 can update GPIOA.IDR for UserButton without forwarding the
+// transition through GPIOA's EXTI output. Keep the normal GPIO connection
+// from the built-in Discovery model and add the missing EXTI0 signal path.
+// The firmware still configures EXTI0/RTSR/IMR/NVIC and services IRQ6.
+UserButton:
+    -> exti@0

@@ -1,0 +1,8 @@
+:name: FSAE Training Project 01 Debug
+using sysbus
+mach create "FSAE_Project01_Debug"
+machine LoadPlatformDescription @platforms/boards/stm32f4_discovery-kit.repl
+sysbus LoadELF @build/01/project01.elf
+machine StartGdbServer 3333
+cpu PerformanceInMips 125
+showAnalyzer sysbus.uart4

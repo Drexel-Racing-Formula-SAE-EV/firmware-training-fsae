@@ -1,0 +1,4 @@
+[submodule "third_party/STM32CubeF4"]
+	path = third_party/STM32CubeF4
+	url = https://github.com/STMicroelectronics/STM32CubeF4.git
+
