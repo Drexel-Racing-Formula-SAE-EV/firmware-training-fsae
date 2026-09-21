@@ -23,6 +23,7 @@ add_library(stm32f4_platform STATIC
   src/board_io.c
   src/timebase.c
   src/adc_input.c
+  src/can_bus.c
   "${CMSIS_DIR}/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c"
   "${HAL_DIR}/Src/stm32f4xx_hal.c"
   "${HAL_DIR}/Src/stm32f4xx_hal_cortex.c"
@@ -38,6 +39,8 @@ add_library(stm32f4_platform STATIC
   "${HAL_DIR}/Src/stm32f4xx_hal_uart.c"
   "${HAL_DIR}/Src/stm32f4xx_hal_adc.c"
   "${HAL_DIR}/Src/stm32f4xx_hal_adc_ex.c")
+target_sources(stm32f4_platform PRIVATE
+  "${HAL_DIR}/Src/stm32f4xx_hal_can.c")
 
 target_include_directories(stm32f4_platform PUBLIC
   include
@@ -83,4 +86,15 @@ function(add_training_firmware target)
     COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${target}>
             ${CMAKE_CURRENT_BINARY_DIR}/${target}.bin
     VERBATIM)
+endfunction()
+
+function(add_freertos_firmware target)
+  if(NOT TARGET freertos_kernel)
+    message(FATAL_ERROR "FreeRTOS support was not configured before ${target}")
+  endif()
+  add_training_firmware(${target} ${ARGN})
+  target_sources(${target} PRIVATE
+    "${CMAKE_SOURCE_DIR}/common/src/freertos_hooks.c")
+  target_compile_definitions(${target} PRIVATE TRAINING_FREERTOS=1)
+  target_link_libraries(${target} PRIVATE freertos_kernel)
 endfunction()

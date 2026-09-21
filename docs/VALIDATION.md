@@ -1,4 +1,4 @@
-# v0.8 review and validation — 2026-09-21
+# v0.9 review and validation — 2026-09-21
 
 ## Changes
 
@@ -15,10 +15,11 @@
   a subsequent newline; re-enter the command after the error. No partial command
   is intentionally executed. A functioning SysTick remains required for HAL timeouts.
 - Project 02 counts serviced callbacks instead of collapsing them into a flag.
-- Project 02 loads a local board overlay that preserves UserButton to GPIOA0
-  and also routes UserButton directly to EXTI0. This works around the observed
-  Renode 1.17 behavior where GPIOA.IDR changed but EXTI0 did not receive the
-  transition. The firmware EXTI/NVIC configuration and handler remain unchanged.
+- Project 02 loads a local board overlay that replaces the virtual button's
+  GPIOA0 destination with EXTI0. Renode GPIO outputs cannot fan out to two
+  destinations in one entry. This works around the observed Renode 1.17
+  behavior where GPIOA.IDR changed but EXTI0 did not receive the transition.
+  The firmware EXTI/NVIC configuration and handler remain unchanged.
 - Project 03 runs each due job once, skips old releases while keeping phase,
   and reports missed-release counters. It does not replay catch-up bursts.
 - Project 05 rejects empty/signed/nondecimal/out-of-range input; distinguishes
@@ -43,7 +44,7 @@ weak Reset_Handler while requiring strong application interrupt handlers.
 The host tests do not simulate actual Cortex-M interrupts or peripheral behavior.
 Arm GNU, CMake/Ninja, Renode, PowerShell and STM32Cube sources are unavailable in
 the packaging environment. Project 00 and Project 01 v0.7 runtime behavior was
-confirmed from the user's Renode output. The v0.8 Project 02 overlay still
+confirmed from the user's Renode output. The v0.9 Project 02 overlay still
 requires execution in the user's Renode installation.
 The Windows dependency checkout is not accessible from here. The exact stalled
 PC in the user's previous ELF remains unknown. Earlier claims that GPIO pull

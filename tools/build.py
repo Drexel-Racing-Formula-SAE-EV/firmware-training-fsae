@@ -7,7 +7,7 @@ import shutil
 import subprocess
 import sys
 
-PROJECTS = {f"{number:02d}" for number in range(6)}
+PROJECTS = {f"{number:02d}" for number in range(11)}
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -38,12 +38,24 @@ def main() -> int:
         print(f"ERROR: expected ELF was not produced: {elf}", file=sys.stderr)
         return 1
     subprocess.run([sys.executable, str(ROOT / 'tools/verify_elf.py'), str(elf)], check=True)
+    if int(args.project) >= 6:
+        peer = build_dir / "training_can_peer.elf"
+        if not peer.is_file():
+            print(f"ERROR: expected CAN peer ELF was not produced: {peer}", file=sys.stderr)
+            return 1
+        subprocess.run([sys.executable, str(ROOT / 'tools/verify_elf.py'), str(peer)], check=True)
     # Record dependencies used; this is provenance, not an invented version pin.
     with (build_dir / 'dependencies.txt').open('w', encoding='utf-8') as report:
         for command in (["arm-none-eabi-gcc", "--version"],
                         ["git", "-C", str(ROOT / 'third_party/STM32CubeF4'), "rev-parse", "HEAD"],
                         ["git", "-C", str(ROOT / 'third_party/STM32CubeF4'), "submodule", "status", "--recursive"]):
             result = subprocess.run(command, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            report.write(' '.join(command) + '\n' + result.stdout + '\n')
+        if int(args.project) >= 7:
+            command = ["git", "-C", str(ROOT / 'third_party/FreeRTOS-Kernel'),
+                       "describe", "--tags", "--exact-match"]
+            result = subprocess.run(command, text=True, stdout=subprocess.PIPE,
+                                    stderr=subprocess.STDOUT)
             report.write(' '.join(command) + '\n' + result.stdout + '\n')
     print(f"[PASS] {elf}")
     return 0

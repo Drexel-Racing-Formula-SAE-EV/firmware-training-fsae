@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-#define FIRMWARE_VERSION "0.8.0"
+#define FIRMWARE_VERSION "0.9.0"
 
 static void print_help(void)
 {

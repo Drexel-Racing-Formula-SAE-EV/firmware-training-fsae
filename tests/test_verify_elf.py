@@ -9,6 +9,7 @@ words = [0] * 69
 words[0] = 0x20020000
 for i, (name, slot) in enumerate([('Reset_Handler', 1), ('HardFault_Handler',3),
                                 ('SysTick_Handler',15), ('EXTI0_IRQHandler',22),
+                                ('CAN1_RX0_IRQHandler',36),
                                 ('UART4_IRQHandler',68)]):
     address = 0x08000100 + i * 0x20
     symbols[name] = (address, 'T')

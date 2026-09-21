@@ -15,6 +15,7 @@ def validate_vectors(symbols, vectors):
         raise ValueError('Incorrect initial stack pointer')
     for name, slot in [('Reset_Handler', 1), ('HardFault_Handler', 3),
                        ('SysTick_Handler', 15), ('EXTI0_IRQHandler', 16 + 6),
+                       ('CAN1_RX0_IRQHandler', 16 + 20),
                        ('UART4_IRQHandler', 16 + 52)]:
         address, kind = symbols.get(name, (0, '?'))
         # ST's actual Reset_Handler may legitimately be declared weak.

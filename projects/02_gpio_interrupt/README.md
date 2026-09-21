@@ -20,10 +20,10 @@ Press the virtual button, break in `EXTI0_IRQHandler`, follow the callback, and
 verify each serviced EXTI callback is processed. EXTI can coalesce physical
 edges; this is not an unlimited edge recorder or a debounce filter.
 
-`renode/project02-button-exti.repl` adds the button-to-EXTI0 signal connection
-needed by Renode 1.17. The built-in board still supplies the normal button-to-
-GPIOA0 connection. The firmware configures and services the same EXTI0/NVIC
-path used on STM32F407 hardware.
+`renode/project02-button-exti.repl` replaces the virtual button's GPIOA0
+destination with EXTI0 for this project. This is necessary because Renode 1.17
+updates GPIOA.IDR but does not forward that transition to EXTI0 in this setup.
+The firmware configures and services the normal STM32F407 EXTI0/NVIC path.
 
 ## Requirements and acceptance criteria
 

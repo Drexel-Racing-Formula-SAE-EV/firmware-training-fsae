@@ -1,0 +1,19 @@
+:name: FSAE Training Project 06
+using sysbus
+emulation CreateCANHub "canHub"
+
+mach create "FSAE_Project06"
+machine LoadPlatformDescription @platforms/boards/stm32f4_discovery-kit.repl
+sysbus LoadELF @build/06/project06.elf
+connector Connect sysbus.can1 canHub
+cpu PerformanceInMips 125
+showAnalyzer sysbus.uart4
+
+mach create "FSAE_CAN_Peer"
+machine LoadPlatformDescription @platforms/boards/stm32f4_discovery-kit.repl
+sysbus LoadELF @build/06/training_can_peer.elf
+connector Connect sysbus.can1 canHub
+cpu PerformanceInMips 125
+showAnalyzer sysbus.uart4
+
+start

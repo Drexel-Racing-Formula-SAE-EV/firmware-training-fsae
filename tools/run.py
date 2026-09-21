@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("project", choices=[f"{n:02d}" for n in range(6)])
+    parser.add_argument("project", choices=[f"{n:02d}" for n in range(11)])
     args = parser.parse_args()
     elf = ROOT / "build" / args.project / f"project{args.project}.elf"
     if not elf.is_file():

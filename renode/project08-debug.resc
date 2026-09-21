@@ -1,0 +1,9 @@
+:name: FSAE Training Project 08 Debug
+using sysbus
+mach create "FSAE_Project08_Debug"
+machine LoadPlatformDescription @platforms/boards/stm32f4_discovery-kit.repl
+machine LoadPlatformDescription @renode/project02-button-exti.repl
+sysbus LoadELF @build/08/project08.elf
+machine StartGdbServer 3333
+cpu PerformanceInMips 125
+showAnalyzer sysbus.uart4

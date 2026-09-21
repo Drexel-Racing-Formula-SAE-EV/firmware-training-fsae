@@ -10,6 +10,7 @@
 #define HAL_RCC_MODULE_ENABLED
 #define HAL_UART_MODULE_ENABLED
 #define HAL_ADC_MODULE_ENABLED
+#define HAL_CAN_MODULE_ENABLED
 
 #define HSE_VALUE              8000000U
 #define HSE_STARTUP_TIMEOUT    100U
@@ -33,6 +34,7 @@
 #include "stm32f4xx_hal_pwr.h"
 #include "stm32f4xx_hal_uart.h"
 #include "stm32f4xx_hal_adc.h"
+#include "stm32f4xx_hal_can.h"
 
 #ifdef USE_FULL_ASSERT
 void assert_failed(uint8_t *file, uint32_t line);

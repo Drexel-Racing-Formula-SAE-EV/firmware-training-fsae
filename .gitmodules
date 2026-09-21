@@ -1,4 +1,6 @@
 [submodule "third_party/STM32CubeF4"]
 	path = third_party/STM32CubeF4
 	url = https://github.com/STMicroelectronics/STM32CubeF4.git
-
+[submodule "third_party/FreeRTOS-Kernel"]
+	path = third_party/FreeRTOS-Kernel
+	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git

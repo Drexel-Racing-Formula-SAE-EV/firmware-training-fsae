@@ -34,4 +34,25 @@ void adc_input_sim_set(uint16_t raw_counts);
 void adc_input_sim_set_valid(bool valid);
 void adc_input_sim_set_running(bool running);
 
+typedef struct {
+    uint32_t id;
+    uint8_t dlc;
+    uint8_t data[8];
+    bool extended;
+    bool remote;
+} can_frame_t;
+
+typedef struct {
+    uint32_t tx_frames;
+    uint32_t tx_errors;
+    uint32_t rx_frames;
+    uint32_t rx_overflows;
+    uint32_t rx_errors;
+} can_bus_stats_t;
+
+void can_bus_init(void);
+bool can_bus_send(const can_frame_t *frame);
+bool can_bus_receive(can_frame_t *frame);
+void can_bus_get_stats(can_bus_stats_t *stats);
+
 #endif

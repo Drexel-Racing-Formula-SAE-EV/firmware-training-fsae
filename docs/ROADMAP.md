@@ -1,6 +1,6 @@
-# Curriculum roadmap after Project 05
+# Curriculum roadmap and implementation gates
 
-Projects 06–10 are release gates. Advanced Projects 11–13 are optional and
+Projects 06–10 are implemented release gates. Advanced Projects 11–13 are optional and
 must not delay the core curriculum.
 
 ## Project 06 — Bare-metal CAN node
@@ -71,4 +71,3 @@ Add one project at a time. Each addition needs a build, a real Renode execution
 test for modeled hardware, host tests for pure logic, acceptance criteria, and
 a code-review checklist. Do not report a peripheral complete because it only
 compiled.
-
