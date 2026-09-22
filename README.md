@@ -4,6 +4,15 @@ Learn STM32 firmware by completing 11 coding labs in Renode. No physical board i
 
 ## Start here
 
+| Your situation | Open this |
+|---|---|
+| First time using the repository | [Install tools and verify setup](docs/setup.md) |
+| Tools already work; ready to code | [Lab 00](exercises/00_bringup/README.md) |
+| Unsure how to build, test or submit | [Lab workflow](exercises/README.md) |
+| A command or test failed | [Troubleshooting](docs/troubleshooting.md) |
+
+**Your work goes in `exercises/`.** The `projects/` folder contains finished examples. Start at 00 and work through the labs in order.
+
 1. Follow [Windows setup](docs/setup.md) once.
 2. Open [Lab 00](exercises/00_bringup/README.md).
 3. Edit the numbered TODOs in that lab's `exercises/.../src/` files.
@@ -49,7 +58,7 @@ Each lab tells you which files to edit, how to test them, and what evidence to s
 Use `--student` for your work. Omitting it builds/runs the completed reference in `build/NN/`. To debug your work:
 
 ```powershell
-.\\tools\\debug.ps1 -Project 00 -Student
+.\tools\debug.ps1 -Project 00 -Student
 ```
 
 Need help? [Troubleshooting](docs/troubleshooting.md) covers test messages, UART windows, GDB and common build issues. [Lab workflow](exercises/README.md) explains completion requirements. Optional physical signal maps are in each lab's wiring notes.

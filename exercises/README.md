@@ -13,7 +13,19 @@ Use the [lab index](../README.md#choose-a-lab) and begin at 00.
 
 Replace 00 with your lab number. Build files are separate from reference output. `--clean` cleans only the selected build directory, not your work.
 
-## Understanding the checks
+## Which window do I use?
+
+| Window | What belongs here | Example |
+|---|---|---|
+| PowerShell | Build, check and launch commands | `python tools/build.py 00 --student` |
+| Renode monitor | Control simulated machines and buttons | `sysbus.gpioPortA.UserButton Press` |
+| Project UART4 | Your project's commands, where supported | `help` |
+| CAN peer UART4 (06–10) | Send commands to your node over CAN | `enable on` |
+| GDB prompt in PowerShell | Breakpoints and inspection | `next`, `info registers` |
+
+The Project UART and CAN peer UART are different windows. Use each lab's exact command list; commands vary between projects. Enter one line at a time and press Enter. When a CAN peer is present, enter `mach set 0` in the Renode monitor before operating the project's button.
+
+## What does my check result mean?
 
 - **ELF build PASS:** your firmware compiled and basic ELF checks passed. Its behavior may still be incomplete.
 - **NOT YET IMPLEMENTED:** numbered TODOs remain. Implement them, then remove their markers. This is the normal starter state.
@@ -30,6 +42,6 @@ The completed code remains in `projects/` and shared support folders. Attempt th
 
 Submit your edited sources, available test results, the lab's required observations, and a brief explanation. Record any untested item as NOT RUN. Keep changes in Git so you can recover an earlier version.
 
-For debugging, use `.\\tools\\debug.ps1 -Project 00 -Student`. The lab provides useful breakpoints. `tools/test.py` checks the reference suite; it is not the student grader.
+For debugging, use `.\tools\debug.ps1 -Project 00 -Student`. The lab provides useful breakpoints. `tools/test.py` checks the reference suite; it is not the student grader.
 
 [Signal maps](WIRING.md) · [Troubleshooting](../docs/troubleshooting.md) · [Instructor notes](../docs/maintainers/README.md)

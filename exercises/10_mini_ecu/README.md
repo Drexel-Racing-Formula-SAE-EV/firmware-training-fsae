@@ -2,18 +2,18 @@
 
 Implement the integrated ECU state transitions and explicit guarded recovery.
 
-## Starting point
+## 1. What is supplied
 
 RTOS tasks, CAN protocol, fault manager, synchronization, injection CLI and actuator-to-LED output are supplied.
-Only edit the files listed below. Earlier concepts are supplied independently in each lab; completing one lab does not automatically copy its code into later labs.
+Edit the files listed below, inside this lab folder. Each lab supplies its own prerequisites; your earlier solutions are not copied into it.
 
-## Coding tasks
+## 2. What you write
 
 - `10.1` — `src/training_ecu.c`, `training_ecu_step`: Implement INIT/READY/ACTIVE/FAULT transitions and guarded recovery; actuator may be ON only in ACTIVE.
 
-Keep function signatures and public headers unchanged. Replace the placeholder and remove its TODO marker only after implementing the requirement. Do not silence tests or copy the solution merely to obtain PASS.
+Keep the supplied function signatures and headers. Implement each TODO before removing its marker.
 
-## Build and check
+## 3. Build and run
 
 From repository root in PowerShell:
 
@@ -23,11 +23,11 @@ python tools/exercise.py check 10
 python tools/run.py 10 --student
 ```
 
-Untouched starters compile, but checks intentionally report INCOMPLETE (and behavioral tests may fail). The student ELF is `build/student/10/project10.elf`. The reference remains `python tools/build.py 10` / `python tools/run.py 10`. Close an earlier Renode session before launching another.
+An untouched starter should compile. Its check reports **NOT YET IMPLEMENTED** until you complete the TODOs. The student ELF is `build/student/10/project10.elf`. The reference remains `python tools/build.py 10` / `python tools/run.py 10`. Close an earlier Renode session before launching another.
 
 Native state-machine tests plus manual integrated fault/recovery acceptance required.
 
-## Acceptance procedure
+## 4. Test your implementation
 
 1. INIT waits for a healthy input set, then enters READY. READY enters ACTIVE on enable; ACTIVE returns READY on disable. Loss of health outside INIT forces FAULT.
 2. FAULT -> READY requires healthy inputs, recovery_requested, enable false and no latches. Invalid states go to FAULT. Only ACTIVE may set actuator_enabled.
@@ -36,14 +36,15 @@ Native state-machine tests plus manual integrated fault/recovery acceptance requ
 5. Repeat with task stall/task run, and peer pause/resume. Keep enable ON during a recovery attempt and prove FAULT/OFF remains. Clear latches before requesting recovery; recover is a one-shot request.
 6. After successful recovery it must take a separate peer enable on to activate. Record all transitions; peer command acceptance alone does not prove ECU behavior.
 
-Type each UART command on its own line and press Enter. Keep separate windows for Project and CAN peer. Renode monitor commands belong in the monitor, not a UART. Allow periodic tasks at least one second after changing a condition unless the procedure says otherwise.
+Enter one command at a time and press Enter. Use the [command-window guide](../README.md#which-window-do-i-use) if unsure where to type. Wait at least one second for periodic output unless a step specifies otherwise.
 
-## GDB exercise
+## 5. Inspect with GDB
 
-Run `.\\tools\\debug.ps1 -Project 10 -Student`. At the initial main breakpoint, useful commands (enter separately) are:
+Run `.\tools\debug.ps1 -Project 10 -Student`. The debugger first stops at `main`. Enter the commands below one at a time. After `continue`, wait for the selected breakpoint; trigger the relevant input if needed.
 
 ```text
 break training_ecu_step
+continue
 print *ecu
 print *inputs
 next
@@ -51,13 +52,13 @@ next
 
 Continue to the relevant code before inspecting locals. Ctrl+C interrupts a running target. A breakpoint pauses execution and changes timing, so assess deadlines without debugger stops too.
 
-## Explain before signing off
+## 6. Explain your work
 
 - Why is communication recovery alone insufficient to restart the actuator?
 - Why separate historical fault latches from the ECU recovery state?
 - Which missing sensor/actuator hardware paths prevent calling this a production ECU?
 
-## Evidence to submit
+## 7. Submit
 
 - Completed student source and a short explanation of each TODO.
 - Build log, available host-test results, and annotated UART/GDB observations for every acceptance step.
@@ -65,3 +66,5 @@ Continue to the relevant code before inspecting locals. Ctrl+C interrupts a runn
 - Record NOT RUN for any unavailable hardware or runtime check; never infer a pass from compilation.
 
 Reference code locations are listed in [the manifest](../manifest.json); compare only after attempting the lab. See [wiring](wiring.md) for scope and signals.
+
+[All labs](../../README.md#choose-a-lab) · [Workflow and check results](../README.md)

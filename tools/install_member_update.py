@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install the v2.1 docs/checker cleanup without overwriting student C code."""
+"""Update member docs and helper scripts without overwriting student C code."""
 import argparse
 from datetime import datetime
 from pathlib import Path
